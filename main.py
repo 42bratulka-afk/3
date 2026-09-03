@@ -7,16 +7,25 @@ from openai import OpenAI
 from aiohttp import web
 from database import init_db, register_or_update_user, get_user_by_identifier, modify_tokens, modify_status
 
-TOKEN = os.getenv("8039854075:AAEgAoo2SCDUiBwz9hzbJ0MNCinj1-56x10")
-GROQ_API_KEY = os.getenv("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")
-ADMIN_ID = int(os.getenv("8431713859", 0))
+# Строгая проверка переменных окружения при старте
+TOKEN = os.getenv("BOT_TOKEN")
+if not TOKEN:
+    raise ValueError("❌ ОШИБКА: Переменная окружения BOT_TOKEN не найдена! Проверьте вкладку Environment в Render.")
+
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+if not GROQ_API_KEY:
+    raise ValueError("❌ ОШИБКА: Переменная окружения GROQ_API_KEY не найдена! Проверьте вкладку Environment в Render.")
+
+ADMIN_ID_RAW = os.getenv("ADMIN_ID", "0")
+ADMIN_ID = int(ADMIN_ID_RAW) if ADMIN_ID_RAW.isdigit() else 0
+
 PORT = int(os.getenv("PORT", 8080))
-RENDER_EXTERNAL_URL = os.getenv("RENDER_EXTERNAL_URL") # Render сам подставляет сюда URL вашего сайта
+RENDER_EXTERNAL_URL = os.getenv("RENDER_EXTERNAL_URL")
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
-# Настройка клиента под бесплатный и сверхбыстрый API от Groq
+# Настройка клиента под абсолютно бесплатный и сверхбыстрый API от Groq
 client = OpenAI(
     api_key=GROQ_API_KEY,
     base_url="https://api.groq.com/openai/v1"
@@ -214,7 +223,7 @@ async def handle_ai_query(message: Message):
             await message.answer(f"⚠️ **Ошибка ИИ-сервиса**\n\nПроизошла непредвиденная ошибка при обработке запроса: `{e}`", parse_mode="Markdown")
 
 
-# --- СИСТЕМА АВТО-ПИНГА И ВЕБ-СЕРВЕРА ДЛЯ ПРЕДОТВРАЩЕНИЯ ЗАСЫПАНИЯ ---
+# --- СИСТЕМА АВТО-ПИНГА (24/7 РАБОТА БЕЗ ЗАСЫПАНИЯ) ---
 
 async def handle_ping(request):
     return web.Response(text="Bot is alive and working!")
@@ -229,8 +238,7 @@ async def start_web_server():
     print(f"Веб-сервер запущен на порту {PORT}")
 
 async def self_ping_task():
-    """Каждые 8 минут пингует собственный URL, чтобы сервер на Render не засыпал"""
-    await asyncio.sleep(15)  # Ждем старта сервера
+    await asyncio.sleep(15)
     import aiohttp
     while True:
         try:
@@ -243,11 +251,10 @@ async def self_ping_task():
         except Exception as e:
             print(f"⚠️ Ошибка авто-пинга: {e}")
         
-        await asyncio.sleep(480)  # Пауза 8 минут (480 секунд)
+        await asyncio.sleep(480) # Каждые 8 минут
 
 async def main():
     init_db()
-    # Запускаем одновременно веб-сервер, задачу само-пинга и бота
     await asyncio.gather(
         start_web_server(),
         self_ping_task(),
