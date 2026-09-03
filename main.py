@@ -1,3 +1,4 @@
+# main.py
 import asyncio
 import os
 from aiogram import Bot, Dispatcher, F
@@ -7,17 +8,10 @@ from openai import OpenAI
 from aiohttp import web
 from database import init_db, register_or_update_user, get_user_by_identifier, modify_tokens, modify_status
 
-# Строгая проверка переменных окружения при старте
-TOKEN = os.getenv("8039854075:AAEgAoo2SCDUiBwz9hzbJ0MNCinj1-56x10")
-if not TOKEN:
-    raise ValueError("❌ ОШИБКА: Переменная окружения BOT_TOKEN не найдена! Проверьте вкладку Environment в Render.")
-
-GROQ_API_KEY = os.getenv("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")
-if not GROQ_API_KEY:
-    raise ValueError("❌ ОШИБКА: Переменная окружения GROQ_API_KEY не найдена! Проверьте вкладку Environment в Render.")
-
-ADMIN_ID_RAW = os.getenv("8431713859", "0")
-ADMIN_ID = int(ADMIN_ID_RAW) if ADMIN_ID_RAW.isdigit() else 0
+# Вставьте ваши данные прямо сюда, чтобы обойти проблему с переменными в Render
+TOKEN = "СЮДА_ВСТАВЬТЕ_ТОКЕН_БОТА_ОТ_BOTFATHER"
+GROQ_API_KEY = "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"
+ADMIN_ID = ВАШ_АЙДИ_ЦИФРАМИ_БЕЗ_КАВЫЧЕК
 
 PORT = int(os.getenv("PORT", 8080))
 RENDER_EXTERNAL_URL = os.getenv("RENDER_EXTERNAL_URL")
@@ -25,7 +19,6 @@ RENDER_EXTERNAL_URL = os.getenv("RENDER_EXTERNAL_URL")
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
-# Настройка клиента под абсолютно бесплатный и сверхбыстрый API от Groq
 client = OpenAI(
     api_key=GROQ_API_KEY,
     base_url="https://api.groq.com/openai/v1"
@@ -157,7 +150,7 @@ async def cmd_unblock(message: Message):
 @dp.message(Command("make_admin"))
 async def cmd_make_admin(message: Message):
     if message.from_user.id != ADMIN_ID:
-        await message.answer("⛔ **Привилегии владельца**\n\nНазначать новых администраторов имеет право исключительно Главный владелец бота (через конфигурацию окружения).", parse_mode="Markdown")
+        await message.answer("⛔ **Привилегии владельца**\n\nНазначать новых администраторов имеет право исключительно Главный владелец бота.", parse_mode="Markdown")
         return
     parts = message.text.split()
     if len(parts) != 2:
@@ -222,9 +215,6 @@ async def handle_ai_query(message: Message):
         if message.chat.type == "private":
             await message.answer(f"⚠️ **Ошибка ИИ-сервиса**\n\nПроизошла непредвиденная ошибка при обработке запроса: `{e}`", parse_mode="Markdown")
 
-
-# --- СИСТЕМА АВТО-ПИНГА (24/7 РАБОТА БЕЗ ЗАСЫПАНИЯ) ---
-
 async def handle_ping(request):
     return web.Response(text="Bot is alive and working!")
 
@@ -251,7 +241,7 @@ async def self_ping_task():
         except Exception as e:
             print(f"⚠️ Ошибка авто-пинга: {e}")
         
-        await asyncio.sleep(480) # Каждые 8 минут
+        await asyncio.sleep(480)
 
 async def main():
     init_db()
