@@ -8,15 +8,15 @@ from aiohttp import web
 from database import init_db, register_or_update_user, get_user_by_identifier, modify_tokens, modify_status
 
 # Строгая проверка переменных окружения при старте
-TOKEN = os.getenv("BOT_TOKEN")
+TOKEN = os.getenv("8039854075:AAEgAoo2SCDUiBwz9hzbJ0MNCinj1-56x10")
 if not TOKEN:
     raise ValueError("❌ ОШИБКА: Переменная окружения BOT_TOKEN не найдена! Проверьте вкладку Environment в Render.")
 
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+GROQ_API_KEY = os.getenv("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")
 if not GROQ_API_KEY:
     raise ValueError("❌ ОШИБКА: Переменная окружения GROQ_API_KEY не найдена! Проверьте вкладку Environment в Render.")
 
-ADMIN_ID_RAW = os.getenv("ADMIN_ID", "0")
+ADMIN_ID_RAW = os.getenv("8431713859", "0")
 ADMIN_ID = int(ADMIN_ID_RAW) if ADMIN_ID_RAW.isdigit() else 0
 
 PORT = int(os.getenv("PORT", 8080))
