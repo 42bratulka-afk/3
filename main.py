@@ -7,13 +7,14 @@ from openai import OpenAI
 from aiohttp import web
 from database import init_db, register_or_update_user, get_user_by_identifier, modify_tokens, modify_status
 
-# Вставьте ваши данные прямо сюда
-TOKEN = "8039854075:AAEgAoo2SCDUiBwz9hzbJ0MNCinj1-56x10"
+# Ваши данные (вставьте свои, если они стирались)
+TOKEN = "СЮДА_ВСТАВЬТЕ_ТОКЕН_БОТА_ОТ_BOTFATHER"
 GROQ_API_KEY = "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"
-ADMIN_ID = 8431713859
+ADMIN_ID = ВАШ_АЙДИ_ЦИФРАМИ_БЕЗ_КАВЫЧЕК
 
 PORT = int(os.getenv("PORT", 8080))
-RENDER_EXTERNAL_URL = os.getenv("RENDER_EXTERNAL_URL")
+# Подстраховка: если Render не передает системный URL, используем ваш адрес явно
+RENDER_EXTERNAL_URL = os.getenv("RENDER_EXTERNAL_URL") or "https://three-rzau.onrender.com"
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
@@ -201,10 +202,9 @@ async def handle_ai_query(message: Message):
         return
 
     try:
-        # Включаем индикатор "печатает..." для создания иллюзии генерации ответа
+        # Индикатор "печатает..."
         await message.bot.send_chat_action(chat_id=message.chat.id, action="typing")
 
-        # Используем надежную и самую популярную модель lamma-3.1-8b-instant
         response = client.chat.completions.create(
             model="llama-3.1-8b-instant",
             messages=[{"role": "user", "content": message.text}]
@@ -231,7 +231,7 @@ async def start_web_server():
     print(f"Веб-сервер запущен на порту {PORT}")
 
 async def self_ping_task():
-    await asyncio.sleep(15)
+    await asyncio.sleep(10)
     import aiohttp
     while True:
         try:
@@ -244,7 +244,7 @@ async def self_ping_task():
         except Exception as e:
             print(f"⚠️ Ошибка авто-пинга: {e}")
         
-        await asyncio.sleep(480)
+        await asyncio.sleep(10)  # Пингует сам себя каждые 10 секунд!
 
 async def main():
     init_db()
