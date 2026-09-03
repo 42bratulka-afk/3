@@ -9,9 +9,9 @@ from aiohttp import web
 from database import init_db, register_or_update_user, get_user_by_identifier, modify_tokens, modify_status
 
 # Вставьте ваши данные прямо сюда, чтобы обойти проблему с переменными в Render
-TOKEN = "СЮДА_ВСТАВЬТЕ_ТОКЕН_БОТА_ОТ_BOTFATHER"
+TOKEN = "8039854075:AAEgAoo2SCDUiBwz9hzbJ0MNCinj1-56x10"
 GROQ_API_KEY = "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"
-ADMIN_ID = ВАШ_АЙДИ_ЦИФРАМИ_БЕЗ_КАВЫЧЕК
+ADMIN_ID = 8431713859
 
 PORT = int(os.getenv("PORT", 8080))
 RENDER_EXTERNAL_URL = os.getenv("RENDER_EXTERNAL_URL")
