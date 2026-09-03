@@ -7,10 +7,10 @@ from openai import OpenAI
 from aiohttp import web
 from database import init_db, register_or_update_user, get_user_by_identifier, modify_tokens, modify_status
 
-# Вставьте ваши данные прямо сюда или используйте переменные окружения
-TOKEN = "8039854075:AAEgAoo2SCDUiBwz9hzbJ0MNCinj1-56x10"
+# Вставьте ваши данные прямо сюда
+TOKEN = "СЮДА_ВСТАВЬТЕ_ТОКЕН_БОТА_ОТ_BOTFATHER"
 GROQ_API_KEY = "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"
-ADMIN_ID = 8431713859
+ADMIN_ID = ВАШ_АЙДИ_ЦИФРАМИ_БЕЗ_КАВЫЧЕК
 
 PORT = int(os.getenv("PORT", 8080))
 RENDER_EXTERNAL_URL = os.getenv("RENDER_EXTERNAL_URL")
@@ -49,7 +49,7 @@ async def cmd_start(message: Message):
     
     await message.answer(
         f"✨ **Добро пожаловать в элитный ИИ-ассистент нового поколения!** 💎\n\n"
-        f"🔮 Я универсальный искусственный интеллект (на базе Groq Llama 3.3), интегрированный для работы в любых личных чатах, группах и каналах.\n\n"
+        f"🔮 Я универсальный искусственный интеллект (на базе Groq Llama 3.1), интегрированный для работы в любых личных чатах, группах и каналах.\n\n"
         f"📊 **Ваш персональный профиль:**\n"
         f"┣ 🆔 Telegram ID: `{user['user_id']}`\n"
         f"┣ 👤 Username: `{uname_display}`\n"
@@ -204,9 +204,9 @@ async def handle_ai_query(message: Message):
         # Включаем индикатор "печатает..." для создания иллюзии генерации ответа
         await message.bot.send_chat_action(chat_id=message.chat.id, action="typing")
 
-        # Запрос к стабильной и мощной бесплатной модели Groq
+        # Используем надежную и самую популярную модель lamma-3.1-8b-instant
         response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="llama-3.1-8b-instant",
             messages=[{"role": "user", "content": message.text}]
         )
         answer = response.choices[0].message.content
